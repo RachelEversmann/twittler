@@ -6,21 +6,64 @@
   </head>
   <body>
     <script>
-
+      
+      var allTweets = {}; 
+      var Users = []; 
+      var test = 0; 
       $(document).ready(function(){
-        var $body = $('body');
-        $body.html('');
 
-        var index = streams.home.length - 1;
-        while(index >= 0){
-          var tweet = streams.home[index];
-          var $tweet = $('<div></div>');
-          $tweet.text('@' + tweet.user + ': ' + tweet.message);
-          $tweet.appendTo($body);
-          index -= 1;
+        function init() {
+          var $body = $('body');  
+          $body.html('');
+          $body.append("<div class = reset>reset</div>"); 
+          var index = streams.home.length - 1;
+          while(index >= 0){
+            var tweet = streams.home[index];
+            var $tweet = $('<div></div>');  
+            $tweet.text('@' + tweet.user + ': ' + tweet.message);
+            $tweet.appendTo($body); 
+            $tweet.addClass(tweet.user); 
+            index -= 1;
+            // Rachel Wrote this  
+            if(!Users.includes("." + tweet.user)) {
+              Users.push("." + tweet.user); 
+            }
+            if(allTweets[tweet.user] === undefined) {
+              allTweets[tweet.user] = []; 
+            }
+            allTweets[tweet.user].push(tweet.message); 
+          }
+        // calls clearOthers for each user 
+        Users.forEach(function(el) {
+          clearOther(el);
+          //console.log("did " + el); 
+          });
         }
-
-      });
+        // Function to clear others when one user is clicked 
+        function clearOther(clicked) {
+         $(clicked).on('click',function() {
+            Users.forEach( function(el) {
+              if(el != clicked) {
+                $(el).remove();
+              }
+                $('.reset').on('click', function() {
+                init();
+               // console.log("clicked reset");
+                })
+             })
+           })
+        }
+        // console.log(allTweets);
+        //console.log(Users); 
+        // Rachel Display code //
+        
+      init(); 
+        // reset button
+        $('.reset').on('click', function() {
+          init();
+          //console.log("clicked reset"); 
+        })
+      })
 
     </script>
   </body>
