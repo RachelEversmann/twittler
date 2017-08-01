@@ -1,28 +1,56 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <link rel="stylesheet" type="text/css" href="mystyle.css">
     <script src="jquery.js"></script>
     <script src="data_generator.js"></script>
   </head>
   <body>
+    <div id=button> <button type="button"> reset </button></div>
+    <div id=main> </div>
     <script>
-      
+
       var allTweets = {}; 
       var Users = []; 
       var test = 0; 
       $(document).ready(function(){
 
         function init() {
-          var $body = $('body');  
+          var $body = $('#main');  
           $body.html('');
-          $body.append("<div class = reset>reset</div>"); 
           var index = streams.home.length - 1;
           while(index >= 0){
             var tweet = streams.home[index];
-            var $tweet = $('<div></div>');  
+            var $tweet = $('<div></div>');
+            var $time = $('<div class=time></div>');
+            var todayFull = new Date();
+            var today = todayFull.getTime(); 
+            var timeFull = tweet.created_at;
+            var time = timeFull.getTime();
+            var rawDiff = today-time;
+            var timeText; 
+            if(rawDiff < 1000) {
+              timeText = "Tweeted less than a second ago";  
+            }
+            else if(rawDiff < 1000*60) {
+              timeText = "Tweeted " + Math.floor(rawDiff/1000) + " seconds ago"; 
+            }
+            else if(rawDiff < 1000*60*60) {
+              timeText = "Tweeted " + Math.floor((rawDiff/1000)/60) + " minutes ago"; 
+            }
+            else if(rawDiff < 1000*60*60*60) {
+              timeText = "Tweeted " + Math.Floor(((rawDiff/100)/60)/60) + " hours ago"; 
+            }
+            else {
+              timeText = "Tweeted " + Math.Floor((((rawDiff/100)/60)/60)/24) + " days ago";  
+            }
             $tweet.text('@' + tweet.user + ': ' + tweet.message);
-            $tweet.appendTo($body); 
+            $time.text(timeText); 
+            $tweet.appendTo($body);
+            $time.appendTo($body); 
             $tweet.addClass(tweet.user); 
+            $tweet.addClass("Tweet");
+            $time.addClass("Time"); 
             index -= 1;
             // Rachel Wrote this  
             if(!Users.includes("." + tweet.user)) {
@@ -33,33 +61,32 @@
             }
             allTweets[tweet.user].push(tweet.message); 
           }
-        // calls clearOthers for each user 
-        Users.forEach(function(el) {
-          clearOther(el);
-          //console.log("did " + el); 
+          // calls clearOthers for each user 
+          Users.forEach(function(el) {
+            clearOther(el);
+            //console.log("did " + el); 
           });
         }
         // Function to clear others when one user is clicked 
         function clearOther(clicked) {
-         $(clicked).on('click',function() {
+          $(clicked).on('click',function() {
             Users.forEach( function(el) {
               if(el != clicked) {
                 $(el).remove();
               }
-                $('.reset').on('click', function() {
+              $('#button').on('click', function() {
                 init();
-               // console.log("clicked reset");
-                })
-             })
-           })
+                // console.log("clicked reset");
+              })
+            })
+          })
         }
         // console.log(allTweets);
         //console.log(Users); 
         // Rachel Display code //
-        
-      init(); 
+        init(); 
         // reset button
-        $('.reset').on('click', function() {
+        $('#button').on('click', function() {
           init();
           //console.log("clicked reset"); 
         })

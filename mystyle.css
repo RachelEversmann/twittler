@@ -1,0 +1,16 @@
+.Tweet {
+    padding: 10px; 
+    border-style: solid;
+    border-width: 2px;
+    margin: 20px; 
+}
+
+.Time {
+    font-size: 15px;
+}
+
+#button{
+    color: grey; 
+    font-size: 10px; 
+    border-radius: 5px; 
+}
